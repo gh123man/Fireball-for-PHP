@@ -5,7 +5,7 @@ include_once '../../src/Fireball.php';
 class Person {
 
     private $fireball;
-    private $data;
+    public $data;
     
     private static $tableDef = array(
         'table'      => 'Person',
@@ -17,10 +17,10 @@ class Person {
         $this->fireball = new Fireball\ORM($this, $ID, self::$tableDef);
     }
     
-    public static function newPerson($val1, $val2) {
-        //Validate your data here. 
-	$ID = md5($val1 . time());
-        if (Fireball\ORM::newRecord(self::$tableDef, array($ID, $val1, $val2, time()))) {
+    public static function newPerson($fname, $lname) {
+        //Validate input data here
+        $ID = md5($fname . time());
+        if (Fireball\ORM::newRecord(self::$tableDef, array($ID, $fname, $lname, time()))) {
             return new self($ID);
         }
     }

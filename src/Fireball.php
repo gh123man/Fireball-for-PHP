@@ -117,6 +117,9 @@ namespace Fireball {
          * method to insert a key => value array into the database
          */
         public static function newRecord($tableDef, $data) {
+            
+            self::validateTableDef($tableDef);
+            
             $keys = array();
             $qArr = array();
 
@@ -127,8 +130,6 @@ namespace Fireball {
                 $qArr[$keys[$i]] = $data[$i];
                 $i++;
             }
-            print_r($qArr);
-            echo 'INSERT INTO ' . $tableDef['table'] . ' VALUES (' . implode(", ", $keys) . ')';
             $query = self::getConnection()->prepare('INSERT INTO ' . $tableDef['table'] . ' VALUES (' . implode(", ", $keys) . ')');
             return ($query->execute($qArr));
         }
@@ -147,7 +148,7 @@ namespace Fireball {
         /**
          * returns true if the row exists by the given ID, col, and table name
          */
-        public static function rowExistsFrom($table, $col, $ID) {
+        private static function rowExistsFrom($table, $col, $ID) {
             if (!isset($table) || !isset($col) || !isset($ID)) {
                 return false;
             }
@@ -208,14 +209,13 @@ namespace Fireball {
         }
         
         public function __call($col, $value = null) {
-            
-            
-            if (isset($this->cols[$col])) {
-            
-                if (isset($value)) {
-                    $this->orm->setCol($col, $value);
+            if (in_array($col, $this->cols)) {
+               
+                if (isset($value[0])) {
+                    $this->orm->setCol($col, $value[0]);
                     
                 } else {
+                    
                     return $this->orm->getCol($col);
                 }
             }
