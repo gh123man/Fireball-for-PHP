@@ -1,6 +1,6 @@
 <?php
 
-include_once 'Fireball.php';
+include_once '../../src/Fireball.php';
 
 class Person {
 
@@ -17,9 +17,12 @@ class Person {
         $this->fireball = new Fireball\ORM($this, $ID, self::$tableDef);
     }
     
-    public static function newPerson($val2, $val2) {
+    public static function newPerson($val1, $val2) {
         //Validate your data here. 
-        return Fireball\ORM::newRecord(self::$tableDef, array($val1, $val2));
+	$ID = md5($val1 . time());
+        if (Fireball\ORM::newRecord(self::$tableDef, array($ID, $val1, $val2, time()))) {
+            return new self($ID);
+        }
     }
     
     //add your methods here. 

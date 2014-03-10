@@ -43,7 +43,7 @@ namespace Fireball {
             
                 $dataAccess = $this->setupDataAccess($tableDef);
                 self::$objectCache[$tableID] = $dataAccess;
-                
+               
             }
             
             $parentMemberName = 'data';
@@ -94,10 +94,6 @@ namespace Fireball {
             return $this->ID;
         }
         
-        public static function newRecord() {
-            //herefd
-        }
-
         /**
          * selects one item from the database
          */
@@ -120,15 +116,20 @@ namespace Fireball {
         /**
          * method to insert a key => value array into the database
          */
-        public static function insert($tableName, $data) {
+        public static function newRecord($tableDef, $data) {
             $keys = array();
             $qArr = array();
-            foreach($data as $key => $value) {
-                $keys[] = ":" . $key;
-                $qArr[$key] = $value;
-            }
 
-            $query = self::getConnection()->prepare('INSERT INTO ' . $tableName . ' VALUES (' . implode(", ", $keys) . ')');
+            $i = 0;
+            foreach($tableDef['fields'] as $field) {
+                
+                $keys[$i] = ":" . $field;
+                $qArr[$keys[$i]] = $data[$i];
+                $i++;
+            }
+            print_r($qArr);
+            echo 'INSERT INTO ' . $tableDef['table'] . ' VALUES (' . implode(", ", $keys) . ')';
+            $query = self::getConnection()->prepare('INSERT INTO ' . $tableDef['table'] . ' VALUES (' . implode(", ", $keys) . ')');
             return ($query->execute($qArr));
         }
         
