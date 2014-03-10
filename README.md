@@ -20,9 +20,9 @@ Once the ORM class is instantiated in the construction of the parent class, it r
 
 The FireballDataAccessInterface (the second key component of Fireball) intercepts function calls named after the columns in the database. Lets assume we have a Person class, it allows you to do something like this:
     
-    $table->data->name(); //fetches the value of the name column
+    $person->data->name(); //fetches the value of the name column
     
-    $table->data->name(“bob”) //sets the value of the name column. 
+    $person->data->name(“bob”) //sets the value of the name column. 
 
 The columns are defined in a private array within the table class. Below is an example that would represent a person class:
     
