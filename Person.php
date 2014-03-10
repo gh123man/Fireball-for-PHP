@@ -5,6 +5,7 @@ include_once 'Fireball.php';
 class Person {
 
     private $fireball;
+    private $data;
     
     private static $tableDef = array(
         'table'      => 'Person',
@@ -17,14 +18,11 @@ class Person {
     }
     
     public static function newPerson($val2, $val2) {
+        //Validate your data here. 
         return Fireball\ORM::newRecord(self::$tableDef, array($val1, $val2));
     }
     
     //add your methods here. 
     
-    
 }
-
-
-
 ?>
