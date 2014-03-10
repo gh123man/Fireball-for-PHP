@@ -1,7 +1,7 @@
 Fireball For PHP
 ====
 
-Portable ORM for php
+Portable ORM for PHP
 
 Advantages
 ---
@@ -18,7 +18,8 @@ One is the ORM class, which will be a private member variable within the parent 
 
 Once the ORM class is instantiated in the construction of the parent class, it registers a the FireballDataAccessInterface object “data” as a member variable with the parent class. This is a public member that provides controlled access to the underlying table and communicates directly with the ORM class.
 
-The FireballDataAccessInterface intercepts function calls named after the columns in the database. This allows you to do something like this
+The FireballDataAccessInterface (the second key component of Fireball) intercepts function calls named after the columns in the database. This allows you to do something like this
+    
     $table->data->id(); //fetches the value of the id column
     
     $table->data->name(“bob”) //sets the value of the name column. 
