@@ -23,32 +23,29 @@ namespace Fireball {
         
             self::validateTableDef($tableDef);
         
-            $this->tableName = $tableDef['table']; //assumes table is named after class
+            $this->tableName = $tableDef['table'];
             $this->primaryKey = $tableDef['primaryKey'];
             
             if (!isset($ID) || !self::rowExistsFrom($this->tableName, $this->primaryKey, $ID)) {
                 throw new UnexpectedValueException("ID: " . $ID . " does not exist in " . $this->tableName);
             }
             
-            
             $this->ID = $ID;
             
             $tableID = md5(serialize($tableDef));
             
+            //Load the data access class from the cache if possible
             if (isset(self::$objectCache[$tableID])) {
-            
                 $dataAccess = self::$objectCache[$tableID];
                 
             } else {
-            
                 $dataAccess = $this->setupDataAccess($tableDef);
                 self::$objectCache[$tableID] = $dataAccess;
                
             }
             
             $parentMemberName = 'data';
-            
-            $parent->$parentMemberName = $dataAccess;
+            $parent->$parentMemberName = $dataAccess; //register the access interface with the parent object
             
         }
         
@@ -197,7 +194,11 @@ namespace Fireball {
         }
         
     }
-
+    
+    /**
+     * For controlled access to the table paramaters. 
+     * should be public in the parent
+     */
     class FireballDataAccessInterface {
     
         private $cols;
@@ -208,14 +209,14 @@ namespace Fireball {
             $this->orm  = $orm;
         }
         
+        /**
+         * intercepts funciton calls and translates them to the table columns
+         */
         public function __call($col, $value = null) {
             if (in_array($col, $this->cols)) {
-               
                 if (isset($value[0])) {
                     $this->orm->setCol($col, $value[0]);
-                    
                 } else {
-                    
                     return $this->orm->getCol($col);
                 }
             }
