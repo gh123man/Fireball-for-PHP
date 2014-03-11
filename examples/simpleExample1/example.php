@@ -13,8 +13,7 @@ echo "\n";
 echo $person->data->fname(); //print first name
 echo "\n";
 
-echo $person->data->fname('Bob'); //set first name to bob
-echo "\n";
+$person->data->fname('Bob'); //set first name to bob
 
 echo $person->data->fname(); //print first name
 echo "\n";
