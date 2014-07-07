@@ -45,7 +45,7 @@ namespace Fireball {
             }
             
             $parentMemberName = 'data';
-            $parent->$parentMemberName = $dataAccess; //register the access interface with the parent object
+            $parent->$parentMemberName = $dataAccess; //register the access controller with the parent object
             
         }
         
@@ -65,7 +65,7 @@ namespace Fireball {
         
         private function setupDataAccess($table) {
             
-            $dataAccess = new FireballDataAccessInterface($this, $table['fields']);
+            $dataAccess = new FireballDataAccessController($this, $table['fields']);
             
             return $dataAccess;
             
@@ -145,9 +145,9 @@ namespace Fireball {
         /**
          * returns true if the row exists by the given ID, col, and table name
          */
-        private static function rowExistsFrom($table, $col, $ID) {
+        public static function rowExistsFrom($table, $col, $ID) {
             if (!isset($table) || !isset($col) || !isset($ID)) {
-                return false;
+                return false; //throw here
             }
             $ID1 = self::dbSelect($col, $table, $col, $ID);
             return $ID1 == $ID;
@@ -193,13 +193,23 @@ namespace Fireball {
             $this->flush();
         }
         
+        public static function createUniquePrimaryKey($tableDef, $seed) {
+            self::validateTableDef($tableDef);
+            while (true) {
+                $ID = md5($seed . rand());
+                if (!self::rowExistsFrom($tableDef['table'], $tableDef['primaryKey'], $ID)) {
+                    return $ID;
+                }
+            }
+        }
+        
     }
     
     /**
      * For controlled access to the table paramaters. 
      * should be public in the parent
      */
-    class FireballDataAccessInterface {
+    class FireballDataAccessController {
     
         private $cols;
         private $orm;
@@ -221,8 +231,6 @@ namespace Fireball {
                 }
             }
         }
-        
-        
     }
 }
     

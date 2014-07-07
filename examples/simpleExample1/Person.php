@@ -19,7 +19,7 @@ class Person {
     
     public static function newPerson($fname, $lname) {
         //Validate input data here
-        $ID = md5($fname . time());
+        $ID = Fireball\ORM::createUniquePrimaryKey(self::$tableDef, $fname . $lname);
         if (Fireball\ORM::newRecord(self::$tableDef, array($ID, $fname, $lname, time()))) {
             return new self($ID);
         }
