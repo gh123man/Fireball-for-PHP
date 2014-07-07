@@ -49,6 +49,10 @@ namespace Fireball {
             
         }
         
+        public function getTableName() {
+            return $this->tableName;
+        }
+        
         private static function validateTableDef($tableDef) {
             if (!isset($tableDef['primaryKey'])) {
                 throw new UnexpectedValueException('primaryKey must be set');
@@ -229,6 +233,8 @@ namespace Fireball {
                 } else {
                     return $this->orm->getCol($col);
                 }
+            } else {
+                throw new UnexpectedValueException("Column: " . $col . " does not exist in " . $this->orm->getTableName());
             }
         }
     }
