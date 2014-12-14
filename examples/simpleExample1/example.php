@@ -3,27 +3,35 @@
 include_once 'Person.php';
 include_once '../../src/Fireball.php';
 
-Fireball\ORM::connect('fbSimpleExample', 'localhost', 'DB_USER', 'DB_PASSWORD');
+Fireball\ORM::connect('DB', 'HOST', 'USERNAME', 'PASSWORD');
 
 $person = Person::newPerson('John', 'Doe');
 
-echo $person->data->ID(); //print id
+echo $person->ID(); //print id
 echo "\n";
 
-echo $person->data->fname(); //print first name
+echo $person->fname(); //print first name
 echo "\n";
 
-$person->data->fname('Bob'); //set first name to bob
+$person->fname('Bob'); //set first name to bob
 
-echo $person->data->fname(); //print first name
+echo $person->fname(); //print first name
 echo "\n";
 
-echo $person->data->lname(); //print last name
+echo $person->lname(); //print last name
 echo "\n";
 
-echo $person->data->time(); //print timestamp
-echo "\n";
+echo $person->time(); //print timestamp
+echo "\n\n";
 
+
+echo "All People\n";
+$allPeople = $person->getAllPeople();
+
+foreach ($allPeople as $person) {
+    echo $person->fname();
+    echo "\n";
+}
 
 
 
