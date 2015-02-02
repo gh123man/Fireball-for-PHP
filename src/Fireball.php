@@ -2,6 +2,7 @@
 /**
  * The MIT License (MIT)
  * Copyright (c) 2014 Brian Floersch
+ * https://github.com/gh123man/Fireball-for-PHP
  */
 
 namespace Fireball {
@@ -134,7 +135,7 @@ namespace Fireball {
         }
 
         /**
-         * method to insert a key => value array into the database
+         * method to insert a key => value array into the database TODO: NEEDS REWRITE TO MATCH newRecordAutoIncrement
          */
         public static function newRecord($tableName, $fields, $data) {
 
@@ -152,6 +153,23 @@ namespace Fireball {
             }
             $query = self::getConnection()->prepare('INSERT INTO ' . $tableName. ' VALUES (' . implode(", ", $keys) . ')');
             return ($query->execute($qArr));
+        }
+
+        /**
+        * method to insert a key => value array into the database
+        */
+        public static function newRecordAutoIncrement($tableName, $data) {
+            $keys = array();
+            $qArr = array();
+            $cols = array();
+            foreach($data as $key => $value) {
+                $cols[] = $key;
+                $keys[] = ":" . $key;
+                $qArr[$key] = $value;
+            }
+            $query = self::getConnection()->prepare('INSERT INTO ' . $tableName . ' (' . implode(", ", $cols) . ') VALUES (' . implode(", ", $keys) . ')');
+            $query->execute($qArr);
+            return self::getConnection()->lastInsertId();
         }
 
         /**
@@ -300,3 +318,4 @@ namespace Fireball {
 }
 
 ?>
+
