@@ -24,13 +24,14 @@ Once the ORM class is instantiated, it looks at the columns passed in `setUp()` 
 The SQL for this would look like:
 
     create table Person(
-        ID char(32) NOT NULL,
+        ID int NOT NULL AUTO_INCREMENT,
         fname char(80) NOT NULL,
         lname char(80) NOT NULL,
         time int unsigned NOT NULL,
-
+        
         PRIMARY KEY (ID)
     );
+    
 
 Keep in mind, this ORM does not write SQL for you. I just makes object mapping and access easier. You still need to write your schema from scratch.
 
@@ -39,5 +40,4 @@ For more information and an implementation of the above code, please look in the
 
 Comming Soon
 ===
- - polymorphism support
  - ~~data selection in lists (maps to more complex SQL queries).~~ - DONE

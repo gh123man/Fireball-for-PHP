@@ -14,27 +14,30 @@ namespace Fireball {
     abstract class ORM {
 
         private $tableDef;
-        private $tableID;
+        private $tableCacheId;
         private $colChangedCache;
         private $ID;
         private static $connection;
 
-        private static $colCacheCache;
+        //private static $colCacheCache;
 
         public function __construct($ID = null) {
-
+            
+            if ($ID == null && !is_a($ID, "FbMappQueryConstructionBypass")) {
+                throw new Exception("ID must be set");
+            }
+            
             $this->tableDef = new TableDef();
             $this->setUp($this->tableDef);
 
             $this->ID = $ID;
 
-            $this->tableID = md5(serialize($this->tableDef));
-
-            //Load from cache if possible TODO: test this
-            if (isset(self::$colCacheCache[$this->tableID])) {
-                $this->colCache = self::$colCacheCache[$tableID];
-                error_log('cache loaded');
+            /* TODO: disabled for now. - not finished
+            $this->tableCacheId = md5(serialize($this->tableDef));
+            if (isset(self::$colCacheCache[$this->tableCacheId])) {
+                $this->colCache = self::$colCacheCache[$tableCacheId];
             }
+            */
 
         }
 
@@ -113,9 +116,9 @@ namespace Fireball {
             }
         }
 
-        public static function rawQuery($query, $map, $returnQuery = false) {
+        public static function rawQuery($query, $dataMap = null, $returnQuery = true) {
             $query = self::getConnection()->prepare($query);
-            $query->execute($map);
+            $query->execute($dataMap);
 
             if ($returnQuery) {
                 return $query;
@@ -135,30 +138,9 @@ namespace Fireball {
         }
 
         /**
-         * method to insert a key => value array into the database TODO: NEEDS REWRITE TO MATCH newRecordAutoIncrement
-         */
-        public static function newRecord($tableName, $fields, $data) {
-
-            //self::validateTableDef($tableDef); FIX
-
-            $keys = array();
-            $qArr = array();
-
-            $i = 0;
-            foreach($fields as $field) {
-
-                $keys[$i] = ":" . $field;
-                $qArr[$keys[$i]] = $data[$i];
-                $i++;
-            }
-            $query = self::getConnection()->prepare('INSERT INTO ' . $tableName. ' VALUES (' . implode(", ", $keys) . ')');
-            return ($query->execute($qArr));
-        }
-
-        /**
         * method to insert a key => value array into the database
         */
-        public static function newRecordAutoIncrement($tableName, $data) {
+        public static function newRecord($tableName, $data) {
             $keys = array();
             $qArr = array();
             $cols = array();
@@ -235,16 +217,6 @@ namespace Fireball {
             $this->flush();
         }
 
-        public static function createUniquePrimaryKey($tableName, $key, $seed) {
-            //self::validateTableDef($tableDef); FIX
-            while (true) {
-                $ID = md5($seed . rand());
-                if (!self::rowExistsFrom($tableName, $key, $ID)) {
-                    return $ID;
-                }
-            }
-        }
-
         /**
          * Maps an array returned by a query to the current object resetting the colChangedCache.
          */
@@ -265,7 +237,7 @@ namespace Fireball {
             $out = array();
             foreach ($query->fetchAll() as $result) {
                 $className = get_called_class();
-                $class = new $className;
+                $class = new $className(new FbMappQueryConstructionBypass());
                 $class->map($result);
                 $out[] = $class;
             }
@@ -273,6 +245,8 @@ namespace Fireball {
         }
 
     }
+    
+    class FbMappQueryConstructionBypass {}
 
     class TableDef {
 
@@ -316,6 +290,4 @@ namespace Fireball {
         }
     }
 }
-
 ?>
-

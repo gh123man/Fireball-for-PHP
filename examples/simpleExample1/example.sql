@@ -1,5 +1,5 @@
 create table Person(
-    ID char(32) NOT NULL,
+    ID int NOT NULL AUTO_INCREMENT,
     fname char(80) NOT NULL,
     lname char(80) NOT NULL,
     time int unsigned NOT NULL,

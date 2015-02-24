@@ -3,7 +3,7 @@
 include_once 'Person.php';
 include_once '../../src/Fireball.php';
 
-Fireball\ORM::connect('DB', 'HOST', 'USERNAME', 'PASSWORD');
+//Fireball\ORM::connect('DB', 'HOST', 'USERNAME', 'PASSWORD');
 
 $person = Person::newPerson('John', 'Doe');
 

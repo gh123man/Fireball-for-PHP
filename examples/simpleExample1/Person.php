@@ -26,10 +26,18 @@ class Person extends Fireball\ORM {
 
 
     public static function newPerson($fname, $lname) {
-        //Validate input data here
-        $ID = Fireball\ORM::createUniquePrimaryKey(self::TABLE_NAME, self::PRIMARY_KEY, time());
-        if (Fireball\ORM::newRecord(self::TABLE_NAME, self::$fields, array($ID, $fname, $lname, time()))) {
+        
+        
+        $ID = self::newRecord(self::TABLE_NAME, array (
+            self::FNAME => $fname,
+            self::LNAME => $lname,
+            self::TIME => time(),
+        ));
+    
+        if (is_numeric($ID)) {
             return new self($ID);
+        } else {
+            throw new Exception("Node creation failed");
         }
     }
 
@@ -39,7 +47,7 @@ class Person extends Fireball\ORM {
      * This is an example of a method you could write that will return an array of mapped person objects for every person in the database.
      */
     public static function getAllPeople() {
-        $result = self::mapQuery(self::rawQuery('select * from ' . self::TABLE_NAME, null, true));
+        $result = self::mapQuery(self::rawQuery('select * from Person'));
         return $result;
     }
 
